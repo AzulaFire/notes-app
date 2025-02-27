@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import NotesModal from '@/components/NotesModal';
-import noteService from '../../services/noteService';
+import noteService from '@/services/noteService';
 
 const NoteScreen = () => {
   const [notes, setNotes] = useState([]);
@@ -27,6 +27,7 @@ const NoteScreen = () => {
     if (response.error) {
       setFetchError(response.error);
     } else {
+      console.log(response.data);
       setNotes(response.data);
       setFetchError(null);
     }
@@ -52,11 +53,11 @@ const NoteScreen = () => {
         data={notes}
         renderItem={({ item }) => (
           <View style={styles.noteItem}>
-            <Text style={styles.noteText}>{item.title}</Text>
-            <Text>{item.content}</Text>
+            <Text style={styles.noteText}>{item.text}</Text>
+            <Text>{item.details}</Text>
           </View>
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.$id}
       />
       <TouchableOpacity
         style={styles.addButton}

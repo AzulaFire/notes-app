@@ -12,6 +12,7 @@ const noteService = {
     if (response.error) {
       return { error: response.error };
     }
+    console.log(response);
     return { data: response };
   },
 };
