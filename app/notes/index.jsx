@@ -34,15 +34,20 @@ const NoteScreen = () => {
     setLoading(false);
   };
 
-  const addNote = () => {
+  const addNote = async () => {
     if (!newNote.title || !newNote.content) {
       setError(true);
       return;
     }
     setError(false);
-    const newId = notes.length + 1;
-    const newNoteWithId = { ...newNote, id: newId };
-    setNotes([...notes, newNoteWithId]);
+
+    const response = await noteService.addNote(newNote.title, newNote.content);
+    if (response.error) {
+      setError(response.error);
+    } else {
+      setNotes([...notes, response.data]);
+    }
+
     setModalVisible(false);
     setNewNote({ title: '', content: '' });
   };
@@ -51,13 +56,13 @@ const NoteScreen = () => {
     <View style={styles.container}>
       <FlatList
         data={notes}
+        keyExtractor={(item) => item.$id}
         renderItem={({ item }) => (
           <View style={styles.noteItem}>
             <Text style={styles.noteText}>{item.text}</Text>
             <Text>{item.details}</Text>
           </View>
         )}
-        keyExtractor={(item) => item.$id}
       />
       <TouchableOpacity
         style={styles.addButton}
