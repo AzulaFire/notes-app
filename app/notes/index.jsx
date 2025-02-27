@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Text,
   View,
@@ -7,20 +7,38 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import NotesModal from '@/components/NotesModal';
+import noteService from '../../services/noteService';
 
 const NoteScreen = () => {
-  const [notes, setNotes] = useState([
-    { id: 1, title: 'Note 1', content: 'Content of Note 1' },
-    { id: 2, title: 'Note 2', content: 'Content of Note 2' },
-    { id: 3, title: 'Note 3', content: 'Content of Note 3' },
-  ]);
+  const [notes, setNotes] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [newNote, setNewNote] = useState({ title: '', content: '' });
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(null);
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
+
+  const fetchNotes = async () => {
+    setLoading(true);
+    const response = await noteService.getNotes();
+    if (response.error) {
+      setFetchError(response.error);
+    } else {
+      setNotes(response.data);
+      setFetchError(null);
+    }
+    setLoading(false);
+  };
 
   const addNote = () => {
     if (!newNote.title || !newNote.content) {
+      setError(true);
       return;
     }
+    setError(false);
     const newId = notes.length + 1;
     const newNoteWithId = { ...newNote, id: newId };
     setNotes([...notes, newNoteWithId]);
@@ -53,6 +71,7 @@ const NoteScreen = () => {
           newNote={newNote}
           setNewNote={setNewNote}
           addNote={addNote}
+          error={error}
         />
       </View>
     </View>

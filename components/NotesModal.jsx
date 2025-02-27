@@ -13,6 +13,7 @@ const NotesModal = ({
   newNote,
   setNewNote,
   addNote,
+  error,
 }) => {
   return (
     <Modal
@@ -46,6 +47,11 @@ const NotesModal = ({
             >
               <Text style={styles.modalButtonText}>Cancel</Text>
             </TouchableOpacity>
+          </View>
+          <View style={styles.errorContainer}>
+            {error && (
+              <Text style={styles.errorText}>All fields are required</Text>
+            )}
           </View>
         </View>
       </View>
@@ -97,6 +103,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '80%',
+  },
+  errorContainer: {
+    marginTop: 10,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    textAlign: 'center',
   },
 });
 
